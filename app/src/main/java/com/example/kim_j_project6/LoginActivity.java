@@ -53,6 +53,10 @@ public class LoginActivity extends AppCompatActivity {
     private void logInUser() {
         String username = usernameText.getText().toString();
         String password = passwordText.getText().toString();
+        if (username.isEmpty() || password.isEmpty()) {
+            Toast.makeText(this, "Empty Entries", Toast.LENGTH_SHORT).show();
+            return;
+        }
         mAuth.signInWithEmailAndPassword(username, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
@@ -72,20 +76,23 @@ public class LoginActivity extends AppCompatActivity {
     private void registerUser() {
         String username = usernameText.getText().toString();
         String password = passwordText.getText().toString();
+        if (username.isEmpty() || password.isEmpty()) {
+            Toast.makeText(this, "Empty Entries", Toast.LENGTH_SHORT).show();
+            return;
+        }
         mAuth.createUserWithEmailAndPassword(username, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         // sign up success
-                        Log.i("HERE LOGIN", "sign up success");
+                        Log.i("HERE LOGIN", "registration success");
                         FirebaseUser user = mAuth.getCurrentUser();
                         // updateUI(user)
                     } else {
                         // sign up failed
-                        Log.i("HERE LOGIN", "sign up failed");
+                        Log.i("HERE LOGIN", "registration failed");
                         Toast.makeText(LoginActivity.this, "Registration Failed", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
-
 
 }
