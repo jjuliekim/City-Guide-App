@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">kim_j-project6</string>
+    <string name="register">Register</string>
+    <string name="log_in">Log in</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+</resources>
