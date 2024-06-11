@@ -62,6 +62,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         // log in success
                         Log.i("HERE LOGIN", "log in success");
+                        Toast.makeText(this, "Log In Success", Toast.LENGTH_SHORT).show();
                         FirebaseUser user = mAuth.getCurrentUser();
                         // updateUI(user);
                     } else {
@@ -85,6 +86,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         // sign up success
                         Log.i("HERE LOGIN", "registration success");
+                        Toast.makeText(this, "Registration Success", Toast.LENGTH_SHORT).show();
                         FirebaseUser user = mAuth.getCurrentUser();
                         // updateUI(user)
                     } else {
