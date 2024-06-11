@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_home"
+        android:title="@string/home" />
+    <item
+        android:id="@+id/menu_explore"
+        android:title="@string/explore" />
+    <item
+        android:id="@+id/menu_favorites"
+        android:title="@string/favorites" />
+    <item
+        android:id="@+id/menu_history"
+        android:title="@string/history" />
+    <item
+        android:id="@+id/menu_settings"
+        android:title="@string/settings" />
+</menu>

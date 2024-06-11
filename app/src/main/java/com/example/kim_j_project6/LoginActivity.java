@@ -1,5 +1,6 @@
 package com.example.kim_j_project6;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -58,7 +59,10 @@ public class LoginActivity extends AppCompatActivity {
                         Log.i("HERE LOGIN", "log in success");
                         Toast.makeText(this, "Logging In", Toast.LENGTH_SHORT).show();
                         FirebaseUser user = mAuth.getCurrentUser();
-                        // updateUI(user);
+                        Intent nextIntent = new Intent(LoginActivity.this, MainPageActivity.class);
+                        Log.i("HERE LOGIN", "user: " + user);
+                        nextIntent.putExtra("user", user);
+                        startActivity(nextIntent);
                     } else {
                         // log in failed
                         Log.i("HERE LOGIN", "log in failed");
@@ -82,7 +86,10 @@ public class LoginActivity extends AppCompatActivity {
                         Log.i("HERE LOGIN", "registration success");
                         Toast.makeText(this, "New Account Created", Toast.LENGTH_SHORT).show();
                         FirebaseUser user = mAuth.getCurrentUser();
-                        // updateUI(user)
+                        Intent nextIntent = new Intent(LoginActivity.this, MainPageActivity.class);
+                        nextIntent.putExtra("user", user);
+                        Log.i("HERE LOGIN", "user: " + user);
+                        startActivity(nextIntent);
                     } else {
                         // sign up failed
                         Log.i("HERE LOGIN", "registration failed");
