@@ -57,7 +57,7 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(this, "Empty Entries", Toast.LENGTH_SHORT).show();
             return;
         }
-        mAuth.signInWithEmailAndPassword(username, password)
+        mAuth.signInWithEmailAndPassword(username + "@email.com", password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         // log in success
@@ -81,7 +81,7 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(this, "Empty Entries", Toast.LENGTH_SHORT).show();
             return;
         }
-        mAuth.createUserWithEmailAndPassword(username, password)
+        mAuth.createUserWithEmailAndPassword(username + "@email.com", password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         // sign up success
