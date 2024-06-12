@@ -9,6 +9,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
 
 public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceViewHolder> {
@@ -30,6 +32,7 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceViewHol
         Place place = placeList.get(position);
         holder.placeNameTextView.setText(place.getName());
         holder.addressTextView.setText(String.format("%s°, %s°", place.getLat(), place.getLng()));
+        holder.descriptionTextView.setText(place.getDescription());
         holder.ratingTextView.setText(String.format("Rating: %d", place.getRating()));
     }
 
@@ -57,12 +60,14 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceViewHol
     public static class PlaceViewHolder extends RecyclerView.ViewHolder {
         TextView placeNameTextView;
         TextView addressTextView;
+        TextView descriptionTextView;
         TextView ratingTextView;
 
         public PlaceViewHolder(@NonNull View itemView) {
             super(itemView);
             placeNameTextView = itemView.findViewById(R.id.place_name_text);
             addressTextView = itemView.findViewById(R.id.address_text);
+            descriptionTextView = itemView.findViewById(R.id.description_text);
             ratingTextView = itemView.findViewById(R.id.rating_text);
         }
     }
