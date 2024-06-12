@@ -67,11 +67,6 @@ public class HomeFragment extends Fragment {
 
     // display dialog to add place
     private void addPlaceDialog() {
-        String placeName = addPlaceText.getText().toString();
-        if (placeName.isEmpty()) {
-            Toast.makeText(getContext(), "Enter Place Name", Toast.LENGTH_SHORT).show();
-            return;
-        }
         // inflate dialog
         View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_add_place, null);
         EditText placeNameText = dialogView.findViewById(R.id.add_place_text);
@@ -80,22 +75,22 @@ public class HomeFragment extends Fragment {
         EditText lngText = dialogView.findViewById(R.id.lng_text);
         Button addButton = dialogView.findViewById(R.id.button_add);
         Button cancelButton = dialogView.findViewById(R.id.button_cancel);
-        placeNameText.setText(placeName);
+        placeNameText.setText(addPlaceText.getText().toString());
         // create dialog
         AlertDialog dialog = new AlertDialog.Builder(getContext()).setView(dialogView).create();
         // add button action
         addButton.setOnClickListener(v -> {
-            String addPlaceName = placeNameText.getText().toString();
+            String placeName = placeNameText.getText().toString();
             String description = descriptionText.getText().toString();
             String lat = latText.getText().toString();
             String lng = lngText.getText().toString();
-            if (addPlaceName.isEmpty() || description.isEmpty() || lat.isEmpty() || lng.isEmpty()) {
+            if (placeName.isEmpty() || description.isEmpty() || lat.isEmpty() || lng.isEmpty()) {
                 Toast.makeText(getContext(), "Empty Entries", Toast.LENGTH_SHORT).show();
                 return;
             }
             // save to database
             String placeId = placesDatabase.push().getKey();
-            Place place = new Place(placeId, addPlaceName, description, lat, lng, 0, false, false);
+            Place place = new Place(placeId, placeName, description, lat, lng, 0, false, false);
             placesDatabase.child(placeId).setValue(place).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     Log.i("HERE HOME", "place saved");
