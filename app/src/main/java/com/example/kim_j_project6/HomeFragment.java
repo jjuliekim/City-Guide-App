@@ -34,7 +34,8 @@ public class HomeFragment extends Fragment {
     private DatabaseReference placesDatabase;
     private ArrayList<Place> placeList;
 
-    public HomeFragment() {}
+    public HomeFragment() {
+    }
 
     public static HomeFragment newInstance() {
         return new HomeFragment();
@@ -86,27 +87,28 @@ public class HomeFragment extends Fragment {
                 Toast.makeText(getContext(), "Empty Entries", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (alreadyExists(lat, lng)) {
-                Toast.makeText(getContext(), lat + "°, " + lng + "° Place Already Exists", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            // save to database
-            try {
-                String placeId = placesDatabase.push().getKey();
-                Place place = new Place(placeId, placeName, description, lat, lng, 0, false, false, user.getUid());
-                placesDatabase.child(placeId).setValue(place).addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Log.i("HERE HOME", "place saved");
-                        Toast.makeText(getContext(), "Place Saved", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(getContext(), "Failed to Add", Toast.LENGTH_SHORT).show();
-                        Log.i("HERE HOME", "place failed to add");
-                    }
-                });
-            } catch (Exception e) {
-                Log.i("HERE HOME", "adding e: " + e.getMessage());
-            }
-            dialog.dismiss();
+            checkIfPlaceExists(lat, lng, exists -> {
+                if (exists) {
+                    Toast.makeText(getContext(), lat + "°, " + lng + "° Place Already Exists", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                try {
+                    String placeId = placesDatabase.push().getKey();
+                    Place place = new Place(placeId, placeName, description, lat, lng, 0, false, false, user.getUid());
+                    placesDatabase.child(placeId).setValue(place).addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Log.i("HERE HOME", "place saved");
+                            Toast.makeText(getContext(), "Place Saved", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getContext(), "Failed to Add", Toast.LENGTH_SHORT).show();
+                            Log.i("HERE HOME", "place failed to add");
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.i("HERE HOME", "adding e: " + e.getMessage());
+                }
+                dialog.dismiss();
+            });
         });
         // cancel button action
         cancelButton.setOnClickListener(v -> dialog.cancel());
@@ -141,13 +143,37 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private boolean alreadyExists(String lat, String lng) {
-        for (Place place : placeList) {
-            if (place.getLat().equals(lat) && place.getLng().equals(lng)) {
-                return true;
+    // avoid duplicate locations (compare lat and long)
+    private void checkIfPlaceExists(String lat, String lng, PlaceExistsCallback callback) {
+        placesDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                boolean exists = false;
+                try {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        Place place = snapshot.getValue(Place.class);
+                        if (place.getLat().equals(lat) && place.getLng().equals(lng)) {
+                            exists = true;
+                            break;
+                        }
+                    }
+                } catch (Exception e) {
+                    Log.i("HERE HOME", "fetching e: " + e.getMessage());
+                }
+                callback.onCallback(exists);
             }
-        }
-        return false;
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.i("HERE HOME", "failed to load places");
+                Toast.makeText(getContext(), "failed to load places", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    // callback interface
+    private interface PlaceExistsCallback {
+        void onCallback(boolean exists);
     }
 
 }
