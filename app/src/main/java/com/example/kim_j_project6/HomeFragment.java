@@ -1,5 +1,6 @@
 package com.example.kim_j_project6;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -12,13 +13,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
 
 public class HomeFragment extends Fragment {
     private FirebaseUser user;
     private PlaceAdapter placeAdapter;
     private EditText addPlaceText;
+    private DatabaseReference placesDatabase;
 
     public HomeFragment() {}
 
@@ -39,14 +46,66 @@ public class HomeFragment extends Fragment {
             Log.i("HERE HOME", "user: " + user);
         }
         addPlaceText = view.findViewById(R.id.addPlaceText);
+        placesDatabase = FirebaseDatabase.getInstance().getReference("places");
         // set recycler view
-        placeAdapter = new PlaceAdapter();
+        placeAdapter = new PlaceAdapter(new ArrayList<>());
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(placeAdapter);
-        // set add place button actions
+        // add place button action
         Button addPlaceButton = view.findViewById(R.id.addPlaceButton);
+        addPlaceButton.setOnClickListener(v -> addPlaceDialog());
 
+        fetchPlaces();
         return view;
     }
+
+    // display dialog to add place
+    private void addPlaceDialog() {
+        String placeName = addPlaceText.getText().toString();
+        if (placeName.isEmpty()) {
+            Toast.makeText(getContext(), "Enter Place Name", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        // inflate dialog
+        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_add_place, null);
+        EditText placeNameText = dialogView.findViewById(R.id.add_place_text);
+        EditText descriptionText = dialogView.findViewById(R.id.add_description_text);
+        EditText latText = dialogView.findViewById(R.id.lat_text);
+        EditText lngText = dialogView.findViewById(R.id.lng_text);
+        Button addButton = dialogView.findViewById(R.id.button_add);
+        Button cancelButton = dialogView.findViewById(R.id.button_cancel);
+        placeNameText.setText(placeName);
+        // create dialog
+        AlertDialog dialog = new AlertDialog.Builder(getContext()).setView(dialogView).create();
+        // add button action
+        addButton.setOnClickListener(v -> {
+            String addPlaceName = placeNameText.getText().toString();
+            String description = descriptionText.getText().toString();
+            String lat = latText.getText().toString();
+            String lng = lngText.getText().toString();
+            if (addPlaceName.isEmpty() || description.isEmpty() || lat.isEmpty() || lng.isEmpty()) {
+                Toast.makeText(getContext(), "Empty Entries", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            // save to database
+            String placeId = placesDatabase.push().getKey();
+            Place place = new Place(placeId, addPlaceName, description, lat, lng, 0, false, false);
+            placesDatabase.child(placeId).setValue(place).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Log.i("HERE HOME", "place saved");
+                    Toast.makeText(getContext(), "Place Saved", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "Failed to Add", Toast.LENGTH_SHORT).show();
+                    Log.i("HERE HOME", "place failed to add");
+                }
+            });
+            dialog.dismiss();
+        });
+
+        // cancel button action
+        cancelButton.setOnClickListener(v -> dialog.cancel());
+        dialog.show();
+    }
+
 }
