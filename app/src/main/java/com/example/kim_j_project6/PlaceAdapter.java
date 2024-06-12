@@ -37,15 +37,11 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceViewHol
         return placeList.size();
     }
 
-    // return place
-    public Place getItem(int position) {
-        return placeList.get(position);
-    }
-
-    // add a place and notify the adapter
-    public void addPlace(Place place) {
-        placeList.add(place);
-        notifyItemInserted(placeList.size() - 1);
+    // update place list
+    public void updatePlaces(List<Place> updatedList) {
+        placeList.clear();
+        placeList.addAll(updatedList);
+        notifyDataSetChanged();
     }
 
     // edit place details

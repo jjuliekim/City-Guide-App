@@ -3,6 +3,7 @@ package com.example.kim_j_project6;
 import android.app.AlertDialog;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,10 +17,14 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class HomeFragment extends Fragment {
     private FirebaseUser user;
@@ -102,10 +107,30 @@ public class HomeFragment extends Fragment {
             });
             dialog.dismiss();
         });
-
         // cancel button action
         cancelButton.setOnClickListener(v -> dialog.cancel());
         dialog.show();
+    }
+
+    // fetch places from database
+    private void fetchPlaces() {
+        placesDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<Place> placeList = new ArrayList<>();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Place place = snapshot.getValue(Place.class);
+                    placeList.add(place);
+                }
+                placeAdapter.updatePlaces(placeList);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.i("HERE HOME", "failed to load places");
+                Toast.makeText(getContext(), "failed to load places", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 }
