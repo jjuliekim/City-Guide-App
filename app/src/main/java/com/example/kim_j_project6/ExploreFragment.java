@@ -22,6 +22,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class ExploreFragment extends Fragment {
     private FirebaseUser user;
@@ -56,7 +58,7 @@ public class ExploreFragment extends Fragment {
         return view;
     }
 
-    // fetch all places from database
+    // fetch all places from database (sorted by rating)
     private void fetchAllPlaces() {
         placesDatabase.addValueEventListener(new ValueEventListener() {
             @Override
@@ -67,16 +69,18 @@ public class ExploreFragment extends Fragment {
                         Place place = snapshot.getValue(Place.class);
                         placeList.add(place);
                     }
+                    // sort by rating (most popular on top)
+                    placeList.sort((p1, p2) -> Integer.compare(p2.getRating(), p1.getRating()));
                     placeAdapter.updatePlaces(placeList);
-                    Log.i("HERE HOME", "places loaded");
+                    Log.i("HERE EXPLORE", "places loaded and sorted");
                 } catch (Exception e) {
-                    Log.i("HERE HOME", "fetching e: " + e.getMessage());
+                    Log.i("HERE EXPLORE", "fetching e: " + e.getMessage());
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.i("HERE HOME", "failed to load places");
+                Log.i("HERE EXPLORE", "failed to load places");
                 Toast.makeText(getContext(), "failed to load places", Toast.LENGTH_SHORT).show();
             }
         });
