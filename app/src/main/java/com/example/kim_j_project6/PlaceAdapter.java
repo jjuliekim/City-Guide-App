@@ -1,5 +1,6 @@
 package com.example.kim_j_project6;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,8 +29,8 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceViewHol
     public void onBindViewHolder(@NonNull PlaceViewHolder holder, int position) {
         Place place = placeList.get(position);
         holder.placeNameTextView.setText(place.getName());
-        holder.addressTextView.setText(String.format("%s, %s", place.getLat(), place.getLng()));
-        holder.ratingTextView.setText(place.getRating());
+        holder.addressTextView.setText(String.format("%s°, %s°", place.getLat(), place.getLng()));
+        holder.ratingTextView.setText(String.format("Rating: %d", place.getRating()));
     }
 
     @Override

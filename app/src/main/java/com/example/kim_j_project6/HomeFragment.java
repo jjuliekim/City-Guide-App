@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -31,6 +32,7 @@ public class HomeFragment extends Fragment {
     private PlaceAdapter placeAdapter;
     private EditText addPlaceText;
     private DatabaseReference placesDatabase;
+    private ArrayList<Place> placeList;
 
     public HomeFragment() {}
 
@@ -41,6 +43,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        user = FirebaseAuth.getInstance().getCurrentUser();
     }
 
     @Override
@@ -86,6 +89,10 @@ public class HomeFragment extends Fragment {
                 Toast.makeText(getContext(), "Empty Entries", Toast.LENGTH_SHORT).show();
                 return;
             }
+            if (alreadyExists(lat, lng)) {
+                Toast.makeText(getContext(), lat + "°, " + lng + "° Place Already Exists", Toast.LENGTH_SHORT).show();
+                return;
+            }
             // save to database
             try {
                 String placeId = placesDatabase.push().getKey();
@@ -102,7 +109,6 @@ public class HomeFragment extends Fragment {
             } catch (Exception e) {
                 Log.i("HERE HOME", "adding e: " + e.getMessage());
             }
-
             dialog.dismiss();
         });
         // cancel button action
@@ -115,7 +121,7 @@ public class HomeFragment extends Fragment {
         placesDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<Place> placeList = new ArrayList<>();
+                placeList = new ArrayList<>();
                 try {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         Place place = snapshot.getValue(Place.class);
@@ -134,6 +140,15 @@ public class HomeFragment extends Fragment {
                 Toast.makeText(getContext(), "failed to load places", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private boolean alreadyExists(String lat, String lng) {
+        for (Place place : placeList) {
+            if (place.getLat().equals(lat) && place.getLng().equals(lng)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

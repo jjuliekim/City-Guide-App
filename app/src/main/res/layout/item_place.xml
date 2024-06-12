@@ -24,7 +24,8 @@
             android:layout_height="wrap_content"
             android:text="@string/textview"
             android:background="#FFFFFF"
-            android:textSize="20sp" />
+            android:textStyle="bold"
+            android:textSize="22sp" />
 
         <TextView
             android:id="@+id/address_text"
