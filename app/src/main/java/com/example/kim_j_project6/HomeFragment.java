@@ -48,7 +48,6 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         if (getArguments() != null) {
             user = getArguments().getParcelable("user");
-            Log.i("HERE HOME", "user: " + user.getEmail());
         }
         addPlaceText = view.findViewById(R.id.addPlaceText);
         placesDatabase = FirebaseDatabase.getInstance().getReference("places");
@@ -88,17 +87,22 @@ public class HomeFragment extends Fragment {
                 return;
             }
             // save to database
-            String placeId = placesDatabase.push().getKey();
-            Place place = new Place(placeId, placeName, description, lat, lng, 0, false, false);
-            placesDatabase.child(placeId).setValue(place).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    Log.i("HERE HOME", "place saved");
-                    Toast.makeText(getContext(), "Place Saved", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getContext(), "Failed to Add", Toast.LENGTH_SHORT).show();
-                    Log.i("HERE HOME", "place failed to add");
-                }
-            });
+            try {
+                String placeId = placesDatabase.push().getKey();
+                Place place = new Place(placeId, placeName, description, lat, lng, 0, false, false);
+                placesDatabase.child(placeId).setValue(place).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Log.i("HERE HOME", "place saved");
+                        Toast.makeText(getContext(), "Place Saved", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getContext(), "Failed to Add", Toast.LENGTH_SHORT).show();
+                        Log.i("HERE HOME", "place failed to add");
+                    }
+                });
+            } catch (Exception e) {
+                Log.i("HERE HOME", "adding e: " + e.getMessage());
+            }
+
             dialog.dismiss();
         });
         // cancel button action
@@ -112,12 +116,16 @@ public class HomeFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 List<Place> placeList = new ArrayList<>();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Place place = snapshot.getValue(Place.class);
-                    placeList.add(place);
+                try {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        Place place = snapshot.getValue(Place.class);
+                        placeList.add(place);
+                    }
+                    placeAdapter.updatePlaces(placeList);
+                    Log.i("HERE HOME", "places loaded");
+                } catch (Exception e) {
+                    Log.i("HERE HOME", "fetching e: " + e.getMessage());
                 }
-                placeAdapter.updatePlaces(placeList);
-                Log.i("HERE HOME", "places loaded");
             }
 
             @Override

@@ -22,6 +22,8 @@ public class Place {
         this.favorited = favorited;
     }
 
+    public Place() {}
+
     // getters and setters
     public String getId() {
         return id;
