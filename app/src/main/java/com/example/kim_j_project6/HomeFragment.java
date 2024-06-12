@@ -48,7 +48,7 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         if (getArguments() != null) {
             user = getArguments().getParcelable("user");
-            Log.i("HERE HOME", "user: " + user);
+            Log.i("HERE HOME", "user: " + user.getEmail());
         }
         addPlaceText = view.findViewById(R.id.addPlaceText);
         placesDatabase = FirebaseDatabase.getInstance().getReference("places");
@@ -67,7 +67,6 @@ public class HomeFragment extends Fragment {
 
     // display dialog to add place
     private void addPlaceDialog() {
-        // inflate dialog
         View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_add_place, null);
         EditText placeNameText = dialogView.findViewById(R.id.add_place_text);
         EditText descriptionText = dialogView.findViewById(R.id.add_description_text);
@@ -118,6 +117,7 @@ public class HomeFragment extends Fragment {
                     placeList.add(place);
                 }
                 placeAdapter.updatePlaces(placeList);
+                Log.i("HERE HOME", "places loaded");
             }
 
             @Override

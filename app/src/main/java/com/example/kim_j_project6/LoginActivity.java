@@ -60,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(this, "Logging In", Toast.LENGTH_SHORT).show();
                         FirebaseUser user = mAuth.getCurrentUser();
                         Intent nextIntent = new Intent(LoginActivity.this, MainPageActivity.class);
-                        Log.i("HERE LOGIN", "user: " + user);
+                        Log.i("HERE LOGIN", "user: " + user.getEmail());
                         nextIntent.putExtra("user", user);
                         startActivity(nextIntent);
                     } else {
@@ -88,7 +88,7 @@ public class LoginActivity extends AppCompatActivity {
                         FirebaseUser user = mAuth.getCurrentUser();
                         Intent nextIntent = new Intent(LoginActivity.this, MainPageActivity.class);
                         nextIntent.putExtra("user", user);
-                        Log.i("HERE LOGIN", "user: " + user);
+                        Log.i("HERE LOGIN", "user: " + user.getEmail());
                         startActivity(nextIntent);
                     } else {
                         // sign up failed
