@@ -9,9 +9,11 @@ public class Place {
     private int rating;
     private boolean visited;
     private boolean favorited;
+    private String userId;
 
     // constructor
-    public Place(String id, String name, String description, String lat, String lng, int rating, boolean visited, boolean favorited) {
+    public Place(String id, String name, String description, String lat, String lng,
+                 int rating, boolean visited, boolean favorited, String userId) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -20,9 +22,11 @@ public class Place {
         this.rating = rating;
         this.visited = visited;
         this.favorited = favorited;
+        this.userId = userId;
     }
 
-    public Place() {}
+    public Place() {
+    }
 
     // getters and setters
     public String getId() {
@@ -89,5 +93,11 @@ public class Place {
         this.favorited = favorited;
     }
 
+    public String getUserId() {
+        return userId;
+    }
 
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 }

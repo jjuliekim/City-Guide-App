@@ -60,7 +60,7 @@ public class HomeFragment extends Fragment {
         Button addPlaceButton = view.findViewById(R.id.addPlaceButton);
         addPlaceButton.setOnClickListener(v -> addPlaceDialog());
 
-        fetchPlaces();
+        fetchPlacesFromUser();
         return view;
     }
 
@@ -93,7 +93,7 @@ public class HomeFragment extends Fragment {
             // save to database
             try {
                 String placeId = placesDatabase.push().getKey();
-                Place place = new Place(placeId, placeName, description, lat, lng, 0, false, false);
+                Place place = new Place(placeId, placeName, description, lat, lng, 0, false, false, user.getUid());
                 placesDatabase.child(placeId).setValue(place).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Log.i("HERE HOME", "place saved");
@@ -113,8 +113,8 @@ public class HomeFragment extends Fragment {
         dialog.show();
     }
 
-    // fetch places from database
-    private void fetchPlaces() {
+    // fetch places added by user
+    private void fetchPlacesFromUser() {
         placesDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -122,7 +122,9 @@ public class HomeFragment extends Fragment {
                 try {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         Place place = snapshot.getValue(Place.class);
-                        placeList.add(place);
+                        if (place.getUserId().equals(user.getUid())) {
+                            placeList.add(place);
+                        }
                     }
                     placeAdapter.updatePlaces(placeList);
                     Log.i("HERE HOME", "places loaded");
