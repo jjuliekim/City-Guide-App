@@ -1,7 +1,6 @@
 package com.example.kim_j_project6;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,11 +14,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -58,7 +54,7 @@ public class DetailsActivity extends AppCompatActivity {
                 averageRating += rating;
             }
             averageRating /= ratings.size();
-            ratingsText.setText(String.format("Average Rating: %s", averageRating));
+            ratingsText.setText(String.format("Average Rating: %.2f", averageRating));
         } else {
             ratingsText.setText("Average Rating: None");
         }
@@ -112,6 +108,7 @@ public class DetailsActivity extends AppCompatActivity {
         placesDatabase.child(place.getId()).setValue(place).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Toast.makeText(this, "Rating added successfully", Toast.LENGTH_SHORT).show();
+                finish();
             } else {
                 Toast.makeText(this, "Failed to add rating", Toast.LENGTH_SHORT).show();
             }

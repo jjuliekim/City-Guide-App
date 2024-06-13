@@ -42,7 +42,7 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceViewHol
                 averageRating += rating;
             }
             averageRating /= ratings.size();
-            holder.ratingTextView.setText(String.format("Average Rating: %s", averageRating));
+            holder.ratingTextView.setText(String.format("Average Rating: %.2f", averageRating));
         } else {
             holder.ratingTextView.setText("Average Rating: None");
         }
