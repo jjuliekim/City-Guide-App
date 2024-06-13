@@ -70,7 +70,7 @@ public class ExploreFragment extends Fragment {
                         placeList.add(place);
                     }
                     // sort by rating (most popular on top)
-                    placeList.sort((p1, p2) -> Integer.compare(p2.getRating(), p1.getRating()));
+                    placeList.sort((p1, p2) -> Double.compare(p2.getAverageRating(), p1.getAverageRating()));
                     placeAdapter.updatePlaces(placeList);
                     Log.i("HERE EXPLORE", "places loaded and sorted");
                 } catch (Exception e) {

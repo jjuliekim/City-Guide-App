@@ -39,17 +39,7 @@ public class DetailsActivity extends AppCompatActivity {
         placeNameText.setText(place.getName());
         descriptionText.setText(place.getDescription());
         addressText.setText(String.format("%s°, %s°", place.getLat(), place.getLng()));
-        ArrayList<Integer> ratings = place.getRating();
-        if (ratings != null && !ratings.isEmpty()) {
-            double averageRating = 0;
-            for (int rating : ratings) {
-                averageRating += rating;
-            }
-            averageRating /= ratings.size();
-            ratingsText.setText(String.format("Average Rating: %s", averageRating));
-        } else {
-            ratingsText.setText("Average Rating: 0");
-        }
+        ratingsText.setText(String.format("Average Rating: %s", place.getAverageRating()));
 
         Button addRatingButton = findViewById(R.id.addRatingButton);
         Button addFavoritesButton = findViewById(R.id.addToFavoritesButton);

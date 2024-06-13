@@ -13,14 +13,14 @@ public class Place implements Parcelable {
     private String description;
     private String lat;
     private String lng;
-    private ArrayList<Integer> rating;
+    private ArrayList<Double> rating;
     private boolean visited;
     private boolean favorited;
     private String userId;
 
     // constructors
     public Place(String id, String name, String description, String lat, String lng,
-                 ArrayList<Integer> rating, boolean visited, boolean favorited, String userId) {
+                 ArrayList<Double> rating, boolean visited, boolean favorited, String userId) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -43,7 +43,7 @@ public class Place implements Parcelable {
         lng = in.readString();
         if (in.readByte() == 0x01) {
             rating = new ArrayList<>();
-            in.readList(rating, Integer.class.getClassLoader());
+            in.readList(rating, Double.class.getClassLoader());
         } else {
             rating = null;
         }
@@ -93,11 +93,11 @@ public class Place implements Parcelable {
         this.lng = lng;
     }
 
-    public ArrayList<Integer> getRating() {
+    public ArrayList<Double> getRating() {
         return rating;
     }
 
-    public void setRating(ArrayList<Integer> rating) {
+    public void setRating(ArrayList<Double> rating) {
         this.rating = rating;
     }
 
@@ -158,5 +158,18 @@ public class Place implements Parcelable {
         dest.writeByte((byte) (visited ? 1 : 0));
         dest.writeByte((byte) (favorited ? 1 : 0));
         dest.writeString(userId);
+    }
+
+    public double getAverageRating() {
+        ArrayList<Double> ratings = rating;
+        if (ratings.isEmpty()) {
+            return 0;
+        }
+        double averageRating = 0;
+        for (double rating : ratings) {
+            averageRating += rating;
+        }
+        averageRating /= ratings.size();
+        return averageRating;
     }
 }
