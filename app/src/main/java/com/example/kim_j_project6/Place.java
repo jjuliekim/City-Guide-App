@@ -1,6 +1,11 @@
 package com.example.kim_j_project6;
 
-public class Place {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
+public class Place implements Parcelable {
     private String id;
     private String name;
     private String description;
@@ -11,7 +16,7 @@ public class Place {
     private boolean favorited;
     private String userId;
 
-    // constructor
+    // constructors
     public Place(String id, String name, String description, String lat, String lng,
                  int rating, boolean visited, boolean favorited, String userId) {
         this.id = id;
@@ -26,6 +31,18 @@ public class Place {
     }
 
     public Place() {
+    }
+
+    protected Place(Parcel in) {
+        id = in.readString();
+        name = in.readString();
+        description = in.readString();
+        lat = in.readString();
+        lng = in.readString();
+        rating = in.readInt();
+        visited = in.readByte() != 0;
+        favorited = in.readByte() != 0;
+        userId = in.readString();
     }
 
     // getters and setters
@@ -99,5 +116,35 @@ public class Place {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public static final Creator<Place> CREATOR = new Creator<Place>() {
+        @Override
+        public Place createFromParcel(Parcel source) {
+            return new Place(source);
+        }
+
+        @Override
+        public Place[] newArray(int size) {
+            return new Place[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(name);
+        dest.writeString(description);
+        dest.writeString(lat);
+        dest.writeString(lng);
+        dest.writeInt(rating);
+        dest.writeByte((byte) (visited ? 1 : 0));
+        dest.writeByte((byte) (favorited ? 1 : 0));
+        dest.writeString(userId);
     }
 }

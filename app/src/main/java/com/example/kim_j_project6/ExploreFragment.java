@@ -49,7 +49,7 @@ public class ExploreFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_explore, container, false);
         placesDatabase = FirebaseDatabase.getInstance().getReference("places");
         // set recycler view
-        placeAdapter = new PlaceAdapter(new ArrayList<>());
+        placeAdapter = new PlaceAdapter(getContext(), new ArrayList<>());
         RecyclerView recyclerView = view.findViewById(R.id.exploreRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(placeAdapter);

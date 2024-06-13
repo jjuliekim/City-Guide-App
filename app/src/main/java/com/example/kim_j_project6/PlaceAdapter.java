@@ -1,6 +1,7 @@
 package com.example.kim_j_project6;
 
-import android.util.Log;
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,14 +10,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.w3c.dom.Text;
-
+import java.util.ArrayList;
 import java.util.List;
 
 public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceViewHolder> {
     private List<Place> placeList;
+    private Context context;
 
-    public PlaceAdapter(List<Place> placeList) {
+    public PlaceAdapter(Context context, ArrayList<Place> placeList) {
+        this.context = context;
         this.placeList = placeList;
     }
 
@@ -34,6 +36,11 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceViewHol
         holder.addressTextView.setText(String.format("%s°, %s°", place.getLat(), place.getLng()));
         holder.descriptionTextView.setText(place.getDescription());
         holder.ratingTextView.setText(String.format("Rating: %d", place.getRating()));
+        holder.itemView.setOnClickListener(v -> {
+            Intent nextIntent = new Intent(context, DetailsActivity.class);
+            nextIntent.putExtra("place", place);
+            context.startActivity(nextIntent);
+        });
     }
 
     @Override
@@ -48,13 +55,8 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceViewHol
         notifyDataSetChanged();
     }
 
-    // edit place details
-    public void editPlace(int position, int rating, boolean visited, boolean favorited) {
-        Place place = placeList.get(position);
-        place.setRating(rating);
-        place.setVisited(visited);
-        place.setFavorited(favorited);
-        notifyItemChanged(position);
+    public interface OnItemClickListener {
+        void onItemClick(int position);
     }
 
     public static class PlaceViewHolder extends RecyclerView.ViewHolder {

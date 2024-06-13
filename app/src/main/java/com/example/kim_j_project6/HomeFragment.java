@@ -53,7 +53,7 @@ public class HomeFragment extends Fragment {
         addPlaceText = view.findViewById(R.id.addPlaceText);
         placesDatabase = FirebaseDatabase.getInstance().getReference("places");
         // set recycler view
-        placeAdapter = new PlaceAdapter(new ArrayList<>());
+        placeAdapter = new PlaceAdapter(getContext(), new ArrayList<>());
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(placeAdapter);
