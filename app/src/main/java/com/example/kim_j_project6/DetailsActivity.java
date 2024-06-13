@@ -14,8 +14,11 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -44,37 +47,35 @@ public class DetailsActivity extends AppCompatActivity {
         addressText = findViewById(R.id.details_address);
         ratingsText = findViewById(R.id.details_rating);
 
-        placeNameText.setText(place.getName());
-        descriptionText.setText(place.getDescription());
-        addressText.setText(String.format("Location: %s°, %s°", place.getLat(), place.getLng()));
-        ArrayList<Double> ratings = place.getRating();
-        if (ratings != null && !ratings.isEmpty()) {
-            double averageRating = 0;
-            for (double rating : ratings) {
-                averageRating += rating;
-            }
-            averageRating /= ratings.size();
-            ratingsText.setText(String.format("Average Rating: %.2f", averageRating));
-        } else {
-            ratingsText.setText("Average Rating: None");
-        }
+        loadPlaceData();
 
         Button addRatingButton = findViewById(R.id.addRatingButton);
-        Button addFavoritesButton = findViewById(R.id.addToFavoritesButton);
-        Button markVisitedButton = findViewById(R.id.markVisitedButton);
-        /*if (place.isFavorited()) {
-            addFavoritesButton.setText("Remove from Favorites");
-        }
-        addFavoritesButton.setOnClickListener(v -> favoritePlace());
-        if (place.isVisited()) {
-            markVisitedButton.setText("Visited "); // + place.getDateVisited();
-        } else {
-            markVisitedButton.setOnClickListener(v -> markAsVisited());
-        }*/
         addRatingButton.setOnClickListener(v -> addRatingDialog());
     }
 
-    // display dialog to add rating
+    private void loadPlaceData() {
+        placesDatabase.child(place.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                place = dataSnapshot.getValue(Place.class);
+                if (place != null) {
+                    updateUI();
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(DetailsActivity.this, "Failed to load place details", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void updateUI() {
+        placeNameText.setText(place.getName());
+        descriptionText.setText(place.getDescription());
+        addressText.setText(String.format("Location: %s°, %s°", place.getLat(), place.getLng()));
+        updateRatingsText();
+    }
+
     private void addRatingDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_rating, null);
@@ -88,31 +89,44 @@ public class DetailsActivity extends AppCompatActivity {
             String ratingInput = ratingText.getText().toString();
             if (ratingInput.isEmpty() || Double.parseDouble(ratingInput) < 0 || Double.parseDouble(ratingInput) > 10) {
                 Toast.makeText(this, "Invalid Rating", Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
-            } else {
-                double rating = Double.parseDouble(ratingInput);
-                addRating(rating);
-                Toast.makeText(this, "Rating Added", Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
+                return;
             }
+            double rating = Double.parseDouble(ratingInput);
+            addRating(rating);
+            dialog.dismiss();
         });
         cancelButton.setOnClickListener(v -> dialog.cancel());
         dialog.show();
     }
 
-    // update database
     private void addRating(double rating) {
         ArrayList<Double> currRatings = place.getRating();
+        if (currRatings == null) {
+            currRatings = new ArrayList<>();
+        }
         currRatings.add(rating);
         place.setRating(currRatings);
         placesDatabase.child(place.getId()).setValue(place).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Toast.makeText(this, "Rating added successfully", Toast.LENGTH_SHORT).show();
-                finish();
+                loadPlaceData();
             } else {
                 Toast.makeText(this, "Failed to add rating", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+    private void updateRatingsText() {
+        ArrayList<Double> ratings = place.getRating();
+        if (ratings == null || ratings.isEmpty()) {
+            ratingsText.setText("Average Rating: None");
+            return;
+        }
+        double averageRating = 0;
+        for (double rating : ratings) {
+            averageRating += rating;
+        }
+        averageRating /= ratings.size();
+        ratingsText.setText(String.format("Average Rating: %.2f", averageRating));
+    }
 }
