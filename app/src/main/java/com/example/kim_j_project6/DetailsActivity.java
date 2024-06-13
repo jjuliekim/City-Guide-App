@@ -13,6 +13,8 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
+
 public class DetailsActivity extends AppCompatActivity {
     private Place place;
     private DatabaseReference placesDatabase;
@@ -37,7 +39,17 @@ public class DetailsActivity extends AppCompatActivity {
         placeNameText.setText(place.getName());
         descriptionText.setText(place.getDescription());
         addressText.setText(String.format("%s°, %s°", place.getLat(), place.getLng()));
-        ratingsText.setText(place.getRating());
+        ArrayList<Integer> ratings = place.getRating();
+        if (ratings != null && !ratings.isEmpty()) {
+            double averageRating = 0;
+            for (int rating : ratings) {
+                averageRating += rating;
+            }
+            averageRating /= ratings.size();
+            ratingsText.setText(String.format("Average Rating: %s", averageRating));
+        } else {
+            ratingsText.setText("Average Rating: 0");
+        }
 
         Button addRatingButton = findViewById(R.id.addRatingButton);
         Button addFavoritesButton = findViewById(R.id.addToFavoritesButton);

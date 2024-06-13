@@ -5,20 +5,22 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
+
 public class Place implements Parcelable {
     private String id;
     private String name;
     private String description;
     private String lat;
     private String lng;
-    private int rating;
+    private ArrayList<Integer> rating;
     private boolean visited;
     private boolean favorited;
     private String userId;
 
     // constructors
     public Place(String id, String name, String description, String lat, String lng,
-                 int rating, boolean visited, boolean favorited, String userId) {
+                 ArrayList<Integer> rating, boolean visited, boolean favorited, String userId) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -39,7 +41,12 @@ public class Place implements Parcelable {
         description = in.readString();
         lat = in.readString();
         lng = in.readString();
-        rating = in.readInt();
+        if (in.readByte() == 0x01) {
+            rating = new ArrayList<>();
+            in.readList(rating, Integer.class.getClassLoader());
+        } else {
+            rating = null;
+        }
         visited = in.readByte() != 0;
         favorited = in.readByte() != 0;
         userId = in.readString();
@@ -86,11 +93,11 @@ public class Place implements Parcelable {
         this.lng = lng;
     }
 
-    public int getRating() {
+    public ArrayList<Integer> getRating() {
         return rating;
     }
 
-    public void setRating(int rating) {
+    public void setRating(ArrayList<Integer> rating) {
         this.rating = rating;
     }
 
@@ -142,7 +149,12 @@ public class Place implements Parcelable {
         dest.writeString(description);
         dest.writeString(lat);
         dest.writeString(lng);
-        dest.writeInt(rating);
+        if (rating == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(rating);
+        }
         dest.writeByte((byte) (visited ? 1 : 0));
         dest.writeByte((byte) (favorited ? 1 : 0));
         dest.writeString(userId);

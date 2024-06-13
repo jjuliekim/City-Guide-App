@@ -35,7 +35,18 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceViewHol
         holder.placeNameTextView.setText(place.getName());
         holder.addressTextView.setText(String.format("%s°, %s°", place.getLat(), place.getLng()));
         holder.descriptionTextView.setText(place.getDescription());
-        holder.ratingTextView.setText(String.format("Rating: %d", place.getRating()));
+        ArrayList<Integer> ratings = place.getRating();
+        if (ratings != null && !ratings.isEmpty()) {
+            double averageRating = 0;
+            for (int rating : ratings) {
+                averageRating += rating;
+            }
+            averageRating /= ratings.size();
+            holder.ratingTextView.setText(String.format("Average Rating: %s", averageRating));
+        } else {
+            holder.ratingTextView.setText("Average Rating: 0");
+        }
+
         holder.itemView.setOnClickListener(v -> {
             Intent nextIntent = new Intent(context, DetailsActivity.class);
             nextIntent.putExtra("place", place);
