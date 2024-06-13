@@ -38,7 +38,7 @@ public class DetailsActivity extends AppCompatActivity {
         TextView ratingsText = findViewById(R.id.details_rating);
         placeNameText.setText(place.getName());
         descriptionText.setText(place.getDescription());
-        addressText.setText(String.format("%s°, %s°", place.getLat(), place.getLng()));
+        addressText.setText(String.format("Location: %s°, %s°", place.getLat(), place.getLng()));
         ArrayList<Double> ratings = place.getRating();
         if (ratings != null && !ratings.isEmpty()) {
             double averageRating = 0;
@@ -46,9 +46,9 @@ public class DetailsActivity extends AppCompatActivity {
                 averageRating += rating;
             }
             averageRating /= ratings.size();
-            ratingsText.setText(String.format("Average Ratings: %s", averageRating));
+            ratingsText.setText(String.format("Average Rating: %s", averageRating));
         } else {
-            ratingsText.setText("Average Ratings: None");
+            ratingsText.setText("Average Rating: None");
         }
 
         Button addRatingButton = findViewById(R.id.addRatingButton);
