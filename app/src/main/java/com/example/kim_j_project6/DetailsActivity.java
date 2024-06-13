@@ -55,6 +55,14 @@ public class DetailsActivity extends AppCompatActivity {
 
         loadPlaceData();
 
+        Button favoriteButton = findViewById(R.id.addToFavoritesButton);
+        if (place.getFavorited().contains(userId)) {
+            favoriteButton.setText("Remove from Favorites");
+            favoriteButton.setOnClickListener(v -> removeFavorite());
+        } else {
+            favoriteButton.setText("Add to Favorites");
+            favoriteButton.setOnClickListener(v -> addFavorite());
+        }
         Button addRatingButton = findViewById(R.id.addRatingButton);
         addRatingButton.setOnClickListener(v -> addRatingDialog());
     }
@@ -91,7 +99,6 @@ public class DetailsActivity extends AppCompatActivity {
         }
         averageRating /= ratings.size();
         ratingsText.setText(String.format("Average Rating: %.2f", averageRating));
-        Button favoriteButton = findViewById(R.id.addToFavoritesButton);
         if (place.getFavorited().contains(userId)) {
             favoriteButton.setText("Remove from Favorites");
             favoriteButton.setOnClickListener(v -> removeFavorite());

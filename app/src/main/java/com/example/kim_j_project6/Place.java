@@ -107,6 +107,9 @@ public class Place implements Parcelable {
     }
 
     public ArrayList<String> getFavorited() {
+        if (favorited == null) {
+            favorited = new ArrayList<>();
+        }
         return favorited;
     }
 
