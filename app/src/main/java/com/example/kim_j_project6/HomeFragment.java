@@ -94,7 +94,7 @@ public class HomeFragment extends Fragment {
                 }
                 try {
                     String placeId = placesDatabase.push().getKey();
-                    Place place = new Place(placeId, placeName, description, lat, lng, new ArrayList<>(), false, false, user.getUid());
+                    Place place = new Place(placeId, placeName, description, lat, lng, new ArrayList<>(), false, new ArrayList<>(), user.getUid());
                     placesDatabase.child(placeId).setValue(place).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             Log.i("HERE HOME", "place saved");

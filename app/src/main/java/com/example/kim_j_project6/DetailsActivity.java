@@ -14,6 +14,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,10 +27,11 @@ import java.util.ArrayList;
 public class DetailsActivity extends AppCompatActivity {
     private Place place;
     private DatabaseReference placesDatabase;
-    TextView placeNameText;
-    TextView descriptionText;
-    TextView addressText;
-    TextView ratingsText;
+    private TextView placeNameText;
+    private TextView descriptionText;
+    private TextView addressText;
+    private TextView ratingsText;
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,8 @@ public class DetailsActivity extends AppCompatActivity {
             return insets;
         });
         placesDatabase = FirebaseDatabase.getInstance().getReference("places");
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        userId = user.getUid();
         place = getIntent().getParcelableExtra("place");
         placeNameText = findViewById(R.id.details_name);
         descriptionText = findViewById(R.id.details_description);
@@ -53,6 +58,7 @@ public class DetailsActivity extends AppCompatActivity {
         addRatingButton.setOnClickListener(v -> addRatingDialog());
     }
 
+    // reload data on this page
     private void loadPlaceData() {
         placesDatabase.child(place.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -62,6 +68,7 @@ public class DetailsActivity extends AppCompatActivity {
                     updateUI();
                 }
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Toast.makeText(DetailsActivity.this, "Failed to load place details", Toast.LENGTH_SHORT).show();
@@ -73,7 +80,25 @@ public class DetailsActivity extends AppCompatActivity {
         placeNameText.setText(place.getName());
         descriptionText.setText(place.getDescription());
         addressText.setText(String.format("Location: %s°, %s°", place.getLat(), place.getLng()));
-        updateRatingsText();
+        ArrayList<Double> ratings = place.getRating();
+        if (ratings == null || ratings.isEmpty()) {
+            ratingsText.setText("Average Rating: None");
+            return;
+        }
+        double averageRating = 0;
+        for (double rating : ratings) {
+            averageRating += rating;
+        }
+        averageRating /= ratings.size();
+        ratingsText.setText(String.format("Average Rating: %.2f", averageRating));
+        Button favoriteButton = findViewById(R.id.addToFavoritesButton);
+        if (place.getFavorited().contains(userId)) {
+            favoriteButton.setText("Remove from Favorites");
+            favoriteButton.setOnClickListener(v -> removeFavorite());
+        } else {
+            favoriteButton.setText("Add to Favorites");
+            favoriteButton.setOnClickListener(v -> addFavorite());
+        }
     }
 
     private void addRatingDialog() {
@@ -116,17 +141,36 @@ public class DetailsActivity extends AppCompatActivity {
         });
     }
 
-    private void updateRatingsText() {
-        ArrayList<Double> ratings = place.getRating();
-        if (ratings == null || ratings.isEmpty()) {
-            ratingsText.setText("Average Rating: None");
-            return;
+    private void addFavorite() {
+        ArrayList<String> favoritedBy = place.getFavorited();
+        if (favoritedBy == null) {
+            favoritedBy = new ArrayList<>();
         }
-        double averageRating = 0;
-        for (double rating : ratings) {
-            averageRating += rating;
+        favoritedBy.add(userId);
+        place.setFavorited(favoritedBy);
+        placesDatabase.child(place.getId()).setValue(place).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Toast.makeText(this, "Added to Favorites", Toast.LENGTH_SHORT).show();
+                loadPlaceData();
+            } else {
+                Toast.makeText(this, "Failed to add to favorites", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void removeFavorite() {
+        ArrayList<String> favoritedBy = place.getFavorited();
+        if (favoritedBy != null) {
+            favoritedBy.remove(userId);
+            place.setFavorited(favoritedBy);
+            placesDatabase.child(place.getId()).setValue(place).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Toast.makeText(this, "Removed from favorites", Toast.LENGTH_SHORT).show();
+                    loadPlaceData();
+                } else {
+                    Toast.makeText(this, "Failed to remove from favorites", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
-        averageRating /= ratings.size();
-        ratingsText.setText(String.format("Average Rating: %.2f", averageRating));
     }
 }

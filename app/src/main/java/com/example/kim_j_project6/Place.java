@@ -15,12 +15,12 @@ public class Place implements Parcelable {
     private String lng;
     private ArrayList<Double> rating;
     private boolean visited;
-    private boolean favorited;
+    private ArrayList<String> favorited;
     private String userId;
 
     // constructors
     public Place(String id, String name, String description, String lat, String lng,
-                 ArrayList<Double> rating, boolean visited, boolean favorited, String userId) {
+                 ArrayList<Double> rating, boolean visited, ArrayList<String> favorited, String userId) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -44,7 +44,8 @@ public class Place implements Parcelable {
         rating = new ArrayList<>();
         in.readList(rating, Double.class.getClassLoader());
         visited = in.readByte() != 0;
-        favorited = in.readByte() != 0;
+        favorited = new ArrayList<>();
+        in.readList(favorited, String.class.getClassLoader());
         userId = in.readString();
     }
 
@@ -105,11 +106,11 @@ public class Place implements Parcelable {
         this.visited = visited;
     }
 
-    public boolean isFavorited() {
+    public ArrayList<String> getFavorited() {
         return favorited;
     }
 
-    public void setFavorited(boolean favorited) {
+    public void setFavorited(ArrayList<String> favorited) {
         this.favorited = favorited;
     }
 
@@ -147,7 +148,7 @@ public class Place implements Parcelable {
         dest.writeString(lng);
         dest.writeList(rating);
         dest.writeByte((byte) (visited ? 1 : 0));
-        dest.writeByte((byte) (favorited ? 1 : 0));
+        dest.writeList(favorited);
         dest.writeString(userId);
     }
 }
