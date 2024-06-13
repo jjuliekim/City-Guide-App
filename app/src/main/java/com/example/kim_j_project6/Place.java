@@ -41,7 +41,7 @@ public class Place implements Parcelable {
         description = in.readString();
         lat = in.readString();
         lng = in.readString();
-        if (in.readByte() == 0x01) {
+        if (in.readByte() == 1) {
             rating = new ArrayList<>();
             in.readList(rating, Double.class.getClassLoader());
         } else {
@@ -150,26 +150,13 @@ public class Place implements Parcelable {
         dest.writeString(lat);
         dest.writeString(lng);
         if (rating == null) {
-            dest.writeByte((byte) (0x00));
+            dest.writeByte((byte) (0));
         } else {
-            dest.writeByte((byte) (0x01));
+            dest.writeByte((byte) (1));
             dest.writeList(rating);
         }
         dest.writeByte((byte) (visited ? 1 : 0));
         dest.writeByte((byte) (favorited ? 1 : 0));
         dest.writeString(userId);
-    }
-
-    public double getAverageRating() {
-        ArrayList<Double> ratings = rating;
-        if (ratings.isEmpty()) {
-            return 0;
-        }
-        double averageRating = 0;
-        for (double rating : ratings) {
-            averageRating += rating;
-        }
-        averageRating /= ratings.size();
-        return averageRating;
     }
 }

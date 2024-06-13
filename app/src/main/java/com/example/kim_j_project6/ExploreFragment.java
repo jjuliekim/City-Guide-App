@@ -70,7 +70,7 @@ public class ExploreFragment extends Fragment {
                         placeList.add(place);
                     }
                     // sort by rating (most popular on top)
-                    placeList.sort((p1, p2) -> Double.compare(p2.getAverageRating(), p1.getAverageRating()));
+                    placeList.sort((p1, p2) -> Double.compare(getAverageRating(p2), getAverageRating(p1)));
                     placeAdapter.updatePlaces(placeList);
                     Log.i("HERE EXPLORE", "places loaded and sorted");
                 } catch (Exception e) {
@@ -84,5 +84,19 @@ public class ExploreFragment extends Fragment {
                 Toast.makeText(getContext(), "failed to load places", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private double getAverageRating(Place place) {
+        ArrayList<Double> ratings = place.getRating();
+        if (ratings != null && !ratings.isEmpty()) {
+            double averageRating = 0;
+            for (double rating : ratings) {
+                averageRating += rating;
+            }
+            averageRating /= ratings.size();
+            return averageRating;
+        } else {
+            return 0.0;
+        }
     }
 }
