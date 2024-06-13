@@ -1,6 +1,7 @@
 package com.example.kim_j_project6;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -68,7 +69,6 @@ public class DetailsActivity extends AppCompatActivity {
                     updateUI();
                 }
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Toast.makeText(DetailsActivity.this, "Failed to load place details", Toast.LENGTH_SHORT).show();
@@ -99,6 +99,7 @@ public class DetailsActivity extends AppCompatActivity {
             favoriteButton.setText("Add to Favorites");
             favoriteButton.setOnClickListener(v -> addFavorite());
         }
+        Log.i("HERE DETAILS", "updated UI");
     }
 
     private void addRatingDialog() {

@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.Comparator;
 
 public class ExploreFragment extends Fragment {
-    private FirebaseUser user;
     private DatabaseReference placesDatabase;
     private PlaceAdapter placeAdapter;
     private ArrayList<Place> placeList;
@@ -41,7 +40,6 @@ public class ExploreFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        user = FirebaseAuth.getInstance().getCurrentUser();
     }
 
     @Override
