@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Place implements Parcelable {
     private String id;
@@ -14,13 +15,13 @@ public class Place implements Parcelable {
     private String lat;
     private String lng;
     private ArrayList<Double> rating;
-    private boolean visited;
+    private HashMap<String, String> visited;
     private ArrayList<String> favorited;
     private String userId;
 
     // constructors
     public Place(String id, String name, String description, String lat, String lng,
-                 ArrayList<Double> rating, boolean visited, ArrayList<String> favorited, String userId) {
+                 ArrayList<Double> rating, HashMap<String, String> visited, ArrayList<String> favorited, String userId) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -43,7 +44,8 @@ public class Place implements Parcelable {
         lng = in.readString();
         rating = new ArrayList<>();
         in.readList(rating, Double.class.getClassLoader());
-        visited = in.readByte() != 0;
+        visited = new HashMap<>();
+        in.readMap(visited, HashMap.class.getClassLoader());
         favorited = new ArrayList<>();
         in.readList(favorited, String.class.getClassLoader());
         userId = in.readString();
@@ -98,11 +100,14 @@ public class Place implements Parcelable {
         this.rating = rating;
     }
 
-    public boolean isVisited() {
+    public HashMap<String, String> getVisited() {
+        if (visited == null) {
+            visited = new HashMap<>();
+        }
         return visited;
     }
 
-    public void setVisited(boolean visited) {
+    public void setVisited(HashMap<String, String> visited) {
         this.visited = visited;
     }
 
@@ -150,7 +155,7 @@ public class Place implements Parcelable {
         dest.writeString(lat);
         dest.writeString(lng);
         dest.writeList(rating);
-        dest.writeByte((byte) (visited ? 1 : 0));
+        dest.writeMap(visited);
         dest.writeList(favorited);
         dest.writeString(userId);
     }

@@ -23,7 +23,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
 
 public class DetailsActivity extends AppCompatActivity {
     private Place place;
@@ -56,6 +60,7 @@ public class DetailsActivity extends AppCompatActivity {
 
         loadPlaceData();
 
+        // button actions
         favoriteButton = findViewById(R.id.addToFavoritesButton);
         if (place.getFavorited().contains(userId)) {
             favoriteButton.setText("Remove from Favorites");
@@ -66,6 +71,8 @@ public class DetailsActivity extends AppCompatActivity {
         }
         Button addRatingButton = findViewById(R.id.addRatingButton);
         addRatingButton.setOnClickListener(v -> addRatingDialog());
+        Button markVisitedButton = findViewById(R.id.markVisitedButton);
+        markVisitedButton.setOnClickListener(v -> markVisited());
     }
 
     // reload data on this page
@@ -181,5 +188,24 @@ public class DetailsActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private void markVisited() {
+        HashMap<String, String> visitedBy = place.getVisited();
+        if (visitedBy == null) {
+            visitedBy = new HashMap<>();
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String currentDate = sdf.format(new Date());
+        visitedBy.put(userId, currentDate);
+        place.setVisited(visitedBy);
+        placesDatabase.child(place.getId()).setValue(place).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Toast.makeText(this, "Marked as visited", Toast.LENGTH_SHORT).show();
+                loadPlaceData();
+            } else {
+                Toast.makeText(this, "Failed to mark as visited", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

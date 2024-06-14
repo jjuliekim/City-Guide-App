@@ -10,6 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +36,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         Place place = placeList.get(position);
         holder.placeNameTextView.setText(place.getName());
         holder.descriptionTextView.setText(place.getDescription());
-        holder.dateVisitedTextView.setText(place.isVisited());
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String visitDate = place.getVisited().get(userId);
+        holder.dateVisitedTextView.setText(visitDate != null ? String.format("Visited on: %s", visitDate) : "Not visited yet");
 
         holder.itemView.setOnClickListener(v -> {
             Intent nextIntent = new Intent(context, DetailsActivity.class);
@@ -46,6 +50,13 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     @Override
     public int getItemCount() {
         return placeList.size();
+    }
+
+    // update place list
+    public void updatePlaces(List<Place> updatedList) {
+        placeList.clear();
+        placeList.addAll(updatedList);
+        notifyDataSetChanged();
     }
 
 

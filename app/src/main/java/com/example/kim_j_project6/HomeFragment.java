@@ -25,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class HomeFragment extends Fragment {
     private FirebaseUser user;
@@ -93,7 +94,8 @@ public class HomeFragment extends Fragment {
                 }
                 try {
                     String placeId = placesDatabase.push().getKey();
-                    Place place = new Place(placeId, placeName, description, lat, lng, new ArrayList<>(), false, new ArrayList<>(), user.getUid());
+                    Place place = new Place(placeId, placeName, description, lat, lng,
+                            new ArrayList<>(), new HashMap<>(), new ArrayList<>(), user.getUid());
                     placesDatabase.child(placeId).setValue(place).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             Log.i("HERE HOME", "place saved");
