@@ -36,6 +36,9 @@ public class LoginActivity extends AppCompatActivity {
             return insets;
         });
         mAuth = FirebaseAuth.getInstance();
+        Intent serviceIntent = new Intent(LoginActivity.this, RatingBgService.class);
+        startService(serviceIntent);
+
         // Load theme preference
         SharedPreferences sharedPreferences = getSharedPreferences("Theme", MODE_PRIVATE);
         boolean isDarkTheme = sharedPreferences.getBoolean("isDarkTheme", false);
@@ -113,13 +116,11 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
         if (requestCode == 101) {
-            // Check if the permission was granted
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.i("HERE RECEIVER", "perms granted");
+                Log.i("HERE LOGIN", "perms granted");
             } else {
-                Log.i("HERE RECEIVER", "perms denied");
+                Log.i("HERE LOGIN", "perms denied");
             }
         }
     }

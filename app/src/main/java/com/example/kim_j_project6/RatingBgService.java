@@ -18,13 +18,14 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class RatingBgService extends Service {
-    private static final long interval = 10 * 60 * 1000;
+    private static final long interval = 2 * 60 * 1000;
     private Handler handler;
     private Runnable ratingCheckRunnable;
     private DatabaseReference placesDatabase;
 
     @Override
     public void onCreate() {
+        Log.i("HERE SERVICE", "creating");
         super.onCreate();
         placesDatabase = FirebaseDatabase.getInstance().getReference("places");
         handler = new Handler();
@@ -39,10 +40,10 @@ public class RatingBgService extends Service {
                             ArrayList<Rating> ratings = place.getRating();
                             if (ratings != null && !ratings.isEmpty()) {
                                 for (Rating rating : ratings) {
-                                    if (isNewRating(rating.getTime())) {
+                                    if (!rating.getRatedByUser().equals(place.getUserId()) && isNewRating(rating.getTime())) {
                                         sendNotification(place.getName(), rating.getRatedByUser(), rating.getTime(), rating.getRating());
                                     } else {
-                                        Log.i("HERE SERVICE", "no new ratings");
+                                        Log.i("HERE SERVICE", "not a new rating or user is the same");
                                     }
                                 }
                             }
@@ -67,11 +68,11 @@ public class RatingBgService extends Service {
     }
 
     private void sendNotification(String placeReviewed, String userName, long timeOfRating, double rating) {
-        Intent intent = new Intent("com.example.kim_j_project6.new_rating");
+        Intent intent = new Intent("com.example.kim_j_project6.NEW_RATING_RECEIVED");
         intent.putExtra("place_reviewed", placeReviewed);
-        intent.putExtra("user", userName);
-        intent.putExtra("time", timeOfRating);
-        intent.putExtra("rating", rating);
+        intent.putExtra("user_name", userName);
+        intent.putExtra("time_of_rating", timeOfRating);
+        intent.putExtra("rating_received", rating);
         sendBroadcast(intent);
         Log.i("HERE SERVICE", "intent sent");
     }
@@ -93,5 +94,4 @@ public class RatingBgService extends Service {
         super.onDestroy();
         handler.removeCallbacks(ratingCheckRunnable);
     }
-
 }

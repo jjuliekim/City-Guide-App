@@ -62,7 +62,6 @@ public class ExploreFragment extends Fragment {
                     // sort by rating (most popular on top)
                     placeList.sort((p1, p2) -> Double.compare(getAverageRating(p2), getAverageRating(p1)));
                     placeAdapter.updatePlaces(placeList);
-                    Log.i("HERE EXPLORE", "places loaded and sorted");
                 } catch (Exception e) {
                     Log.i("HERE EXPLORE", "fetching e: " + e.getMessage());
                 }

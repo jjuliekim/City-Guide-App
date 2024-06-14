@@ -21,25 +21,25 @@ public class RatingReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent != null && "com.example.kim_j_project6.NEW_RATING_RECEIVED".equals(intent.getAction())) {
+        if (intent != null && "com.example.kim_j_project6.new_rating".equals(intent.getAction())) {
             Log.i("HERE RECEIVED", "received");
             String placeReviewed = intent.getStringExtra("place_reviewed");
             String userName = intent.getStringExtra("user_name");
+            double ratingReceived = intent.getDoubleExtra("rating_received", 0.0);
 
             // convert time to readable string
             long timeOfRating = intent.getLongExtra("time_of_rating", 0);
             SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy HH:mm", Locale.getDefault());
             String timeString = sdf.format(new Date(timeOfRating));
-            double ratingReceived = intent.getDoubleExtra("rating_received", 0.0);
 
             // check and request permission if needed
-            if (ContextCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.SEND_SMS}, 101);
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 101);
             }
 
             // send notification
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "default_channel_id")
-                    .setContentTitle("New Rating Received")
+                    .setContentTitle("Rating Received")
                     .setContentText(placeReviewed + " received a rating of " + ratingReceived + " from " + userName + " at " + timeString)
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 

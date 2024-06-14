@@ -125,7 +125,6 @@ public class DetailsActivity extends AppCompatActivity {
         } else {
             markVisitedButton.setText(R.string.already_visited);
         }
-        Log.i("HERE DETAILS", "updated UI");
     }
 
     private void addRatingDialog() {

@@ -130,7 +130,6 @@ public class HomeFragment extends Fragment {
                         }
                     }
                     placeAdapter.updatePlaces(placeList);
-                    Log.i("HERE HOME", "places loaded");
                 } catch (Exception e) {
                     Log.i("HERE HOME", "fetching e: " + e.getMessage());
                 }
