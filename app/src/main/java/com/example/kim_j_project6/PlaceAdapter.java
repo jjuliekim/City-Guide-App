@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceViewHolder> {
-    private List<Place> placeList;
-    private Context context;
+    private final List<Place> placeList;
+    private final Context context;
 
     public PlaceAdapter(Context context, ArrayList<Place> placeList) {
         this.context = context;
