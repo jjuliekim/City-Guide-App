@@ -77,11 +77,11 @@ public class ExploreFragment extends Fragment {
     }
 
     private double getAverageRating(Place place) {
-        ArrayList<Double> ratings = place.getRating();
+        ArrayList<Rating> ratings = place.getRating();
         if (ratings != null && !ratings.isEmpty()) {
             double averageRating = 0;
-            for (double rating : ratings) {
-                averageRating += rating;
+            for (Rating rating : ratings) {
+                averageRating += rating.getRating();
             }
             averageRating /= ratings.size();
             return averageRating;

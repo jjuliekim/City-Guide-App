@@ -35,11 +35,11 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceViewHol
         holder.placeNameTextView.setText(place.getName());
         holder.addressTextView.setText(String.format("%s°, %s°", place.getLat(), place.getLng()));
         holder.descriptionTextView.setText(place.getDescription());
-        ArrayList<Double> ratings = place.getRating();
+        ArrayList<Rating> ratings = place.getRating();
         if (ratings != null && !ratings.isEmpty()) {
             double averageRating = 0;
-            for (double rating : ratings) {
-                averageRating += rating;
+            for (Rating rating : ratings) {
+                averageRating += rating.getRating();
             }
             averageRating /= ratings.size();
             holder.ratingTextView.setText(String.format("Average Rating: %.2f", averageRating));

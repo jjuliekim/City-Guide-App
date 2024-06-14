@@ -14,14 +14,14 @@ public class Place implements Parcelable {
     private String description;
     private String lat;
     private String lng;
-    private ArrayList<Double> rating;
+    private ArrayList<Rating> rating;
     private HashMap<String, String> visited;
     private ArrayList<String> favorited;
     private String userId;
 
     // constructors
     public Place(String id, String name, String description, String lat, String lng,
-                 ArrayList<Double> rating, HashMap<String, String> visited, ArrayList<String> favorited, String userId) {
+                 ArrayList<Rating> rating, HashMap<String, String> visited, ArrayList<String> favorited, String userId) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -43,7 +43,7 @@ public class Place implements Parcelable {
         lat = in.readString();
         lng = in.readString();
         rating = new ArrayList<>();
-        in.readList(rating, Double.class.getClassLoader());
+        in.readList(rating, Rating.class.getClassLoader());
         visited = new HashMap<>();
         in.readMap(visited, HashMap.class.getClassLoader());
         favorited = new ArrayList<>();
@@ -92,11 +92,11 @@ public class Place implements Parcelable {
         this.lng = lng;
     }
 
-    public ArrayList<Double> getRating() {
+    public ArrayList<Rating> getRating() {
         return rating;
     }
 
-    public void setRating(ArrayList<Double> rating) {
+    public void setRating(ArrayList<Rating> rating) {
         this.rating = rating;
     }
 

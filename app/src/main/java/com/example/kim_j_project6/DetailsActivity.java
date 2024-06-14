@@ -79,6 +79,26 @@ public class DetailsActivity extends AppCompatActivity {
             markVisitedButton.setText("Mark as Visited");
             markVisitedButton.setOnClickListener(v -> markVisited());
         }
+
+        checkRatings();
+    }
+
+    // check if new ratings have been added
+    private void checkRatings() {
+        placesDatabase.child(place.getId()).child("ratings").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    // send notification
+                    Log.d("HERE DETAILS", "New rating added, notification sending");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("HERE DETAILS", "Error fetching ratings", databaseError.toException());
+            }
+        });
     }
 
     // reload data on this page
@@ -102,14 +122,14 @@ public class DetailsActivity extends AppCompatActivity {
         placeNameText.setText(place.getName());
         descriptionText.setText(place.getDescription());
         addressText.setText(String.format("Location: %s°, %s°", place.getLat(), place.getLng()));
-        ArrayList<Double> ratings = place.getRating();
+        ArrayList<Rating> ratings = place.getRating();
         if (ratings == null || ratings.isEmpty()) {
             ratingsText.setText("Average Rating: None");
             return;
         }
         double averageRating = 0;
-        for (double rating : ratings) {
-            averageRating += rating;
+        for (Rating rating : ratings) {
+            averageRating += rating.getRating();
         }
         averageRating /= ratings.size();
         ratingsText.setText(String.format("Average Rating: %.2f", averageRating));
@@ -152,11 +172,11 @@ public class DetailsActivity extends AppCompatActivity {
     }
 
     private void addRating(double rating) {
-        ArrayList<Double> currRatings = place.getRating();
+        ArrayList<Rating> currRatings = place.getRating();
         if (currRatings == null) {
             currRatings = new ArrayList<>();
         }
-        currRatings.add(rating);
+        currRatings.add(new Rating(userId, rating, System.currentTimeMillis()));
         place.setRating(currRatings);
         placesDatabase.child(place.getId()).setValue(place).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
