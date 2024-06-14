@@ -178,6 +178,13 @@ public class DetailsActivity extends AppCompatActivity {
         placesDatabase.child(place.getId()).setValue(place).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Toast.makeText(this, "Added to Favorites", Toast.LENGTH_SHORT).show();
+                if (place.getFavorited().contains(userId)) {
+                    favoriteButton.setText("Remove from Favorites");
+                    favoriteButton.setOnClickListener(v -> removeFavorite());
+                } else {
+                    favoriteButton.setText("Add to Favorites");
+                    favoriteButton.setOnClickListener(v -> addFavorite());
+                }
                 loadPlaceData();
             } else {
                 Toast.makeText(this, "Failed to add to favorites", Toast.LENGTH_SHORT).show();
@@ -192,6 +199,13 @@ public class DetailsActivity extends AppCompatActivity {
             place.setFavorited(favoritedBy);
             placesDatabase.child(place.getId()).setValue(place).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
+                    if (place.getFavorited().contains(userId)) {
+                        favoriteButton.setText("Remove from Favorites");
+                        favoriteButton.setOnClickListener(v -> removeFavorite());
+                    } else {
+                        favoriteButton.setText("Add to Favorites");
+                        favoriteButton.setOnClickListener(v -> addFavorite());
+                    }
                     Toast.makeText(this, "Removed from favorites", Toast.LENGTH_SHORT).show();
                     loadPlaceData();
                 } else {
