@@ -12,7 +12,6 @@
         android:layout_marginTop="1dp"
         android:layout_marginEnd="1dp"
         android:orientation="vertical"
-        android:background="#E9E0F8"
         android:padding="5dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,7 +22,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/textview"
-            android:background="#FFFFFF"
             android:textStyle="bold"
             android:padding="5dp"
             android:textSize="22sp" />
@@ -34,9 +32,7 @@
             android:layout_height="wrap_content"
             android:text="@string/textview"
             android:padding="5dp"
-            android:background="#FFFFFF"
             android:textSize="18sp" />
-
 
         <TextView
             android:id="@+id/history_date_text"
@@ -44,7 +40,14 @@
             android:layout_height="wrap_content"
             android:text="@string/textview"
             android:padding="5dp"
-            android:background="#FFFFFF"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/textLine"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/line"
+            android:padding="5dp"
             android:textSize="18sp" />
 
     </LinearLayout>
