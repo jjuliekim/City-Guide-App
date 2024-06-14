@@ -79,26 +79,6 @@ public class DetailsActivity extends AppCompatActivity {
             markVisitedButton.setText("Mark as Visited");
             markVisitedButton.setOnClickListener(v -> markVisited());
         }
-
-        checkRatings();
-    }
-
-    // check if new ratings have been added
-    private void checkRatings() {
-        placesDatabase.child(place.getId()).child("ratings").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    // send notification
-                    Log.d("HERE DETAILS", "New rating added, notification sending");
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e("HERE DETAILS", "Error fetching ratings", databaseError.toException());
-            }
-        });
     }
 
     // reload data on this page

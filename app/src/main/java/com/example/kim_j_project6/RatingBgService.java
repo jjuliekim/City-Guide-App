@@ -24,10 +24,6 @@ public class RatingBgService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Date currentDate = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy HH:mm", Locale.getDefault());
-        String formattedDate = dateFormat.format(currentDate);
-        Log.i("HERE SERVICE", "date: " + formattedDate);
 
         return START_STICKY;
     }
