@@ -18,7 +18,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class RatingBgService extends Service {
-    private static final long interval = 2 * 60 * 1000;
+    private static final long interval = 10 * 60 * 1000;
     private Handler handler;
     private Runnable ratingCheckRunnable;
     private DatabaseReference placesDatabase;
