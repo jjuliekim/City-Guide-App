@@ -33,6 +33,7 @@ public class DetailsActivity extends AppCompatActivity {
     private TextView addressText;
     private TextView ratingsText;
     private String userId;
+    private Button favoriteButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +56,7 @@ public class DetailsActivity extends AppCompatActivity {
 
         loadPlaceData();
 
-        Button favoriteButton = findViewById(R.id.addToFavoritesButton);
+        favoriteButton = findViewById(R.id.addToFavoritesButton);
         if (place.getFavorited().contains(userId)) {
             favoriteButton.setText("Remove from Favorites");
             favoriteButton.setOnClickListener(v -> removeFavorite());
