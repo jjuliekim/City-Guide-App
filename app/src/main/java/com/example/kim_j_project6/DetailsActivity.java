@@ -38,6 +38,7 @@ public class DetailsActivity extends AppCompatActivity {
     private TextView ratingsText;
     private String userId;
     private Button favoriteButton;
+    private Button markVisitedButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,8 +72,13 @@ public class DetailsActivity extends AppCompatActivity {
         }
         Button addRatingButton = findViewById(R.id.addRatingButton);
         addRatingButton.setOnClickListener(v -> addRatingDialog());
-        Button markVisitedButton = findViewById(R.id.markVisitedButton);
-        markVisitedButton.setOnClickListener(v -> markVisited());
+        markVisitedButton = findViewById(R.id.markVisitedButton);
+        if (place.getVisited().containsKey(userId)) {
+            markVisitedButton.setText(R.string.already_visited);
+        } else {
+            markVisitedButton.setText("Mark as Visited");
+            markVisitedButton.setOnClickListener(v -> markVisited());
+        }
     }
 
     // reload data on this page
@@ -113,6 +119,11 @@ public class DetailsActivity extends AppCompatActivity {
         } else {
             favoriteButton.setText("Add to Favorites");
             favoriteButton.setOnClickListener(v -> addFavorite());
+        }
+        if (place.getVisited().containsKey(userId)) {
+            markVisitedButton.setText(R.string.already_visited);
+        } else {
+            markVisitedButton.setText(R.string.already_visited);
         }
         Log.i("HERE DETAILS", "updated UI");
     }
@@ -195,12 +206,13 @@ public class DetailsActivity extends AppCompatActivity {
         if (visitedBy == null) {
             visitedBy = new HashMap<>();
         }
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault());
         String currentDate = sdf.format(new Date());
         visitedBy.put(userId, currentDate);
         place.setVisited(visitedBy);
         placesDatabase.child(place.getId()).setValue(place).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
+                markVisitedButton.setText(R.string.already_visited);
                 Toast.makeText(this, "Marked as visited", Toast.LENGTH_SHORT).show();
                 loadPlaceData();
             } else {

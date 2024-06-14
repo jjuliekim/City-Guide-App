@@ -32,11 +32,6 @@ public class FavoritesFragment extends Fragment {
     public FavoritesFragment() {
     }
 
-
-    public static FavoritesFragment newInstance() {
-        return new FavoritesFragment();
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
