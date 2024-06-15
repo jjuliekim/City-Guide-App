@@ -123,7 +123,7 @@ public class DetailsActivity extends AppCompatActivity {
         if (place.getVisited().containsKey(userId)) {
             markVisitedButton.setText(R.string.already_visited);
         } else {
-            markVisitedButton.setText(R.string.already_visited);
+            markVisitedButton.setText("Mark as Visited");
         }
     }
 
